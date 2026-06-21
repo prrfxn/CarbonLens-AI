@@ -2,88 +2,77 @@
 
 > See Your Impact. Shape Your Future.
 
-CarbonLens AI is a production-grade SaaS sustainability platform that enables individuals to measure, understand, simulate, and reduce their carbon footprint. Powered by standard React + TanStack Start, Supabase, and Google Gemini 2.5 Flash.
+CarbonLens AI is an AI-powered sustainability dashboard and calculator built for the **Google Solution Challenge 2026** (PromptWars Virtual Challenge 3). It enables individuals to measure, understand, simulate, and reduce their carbon footprint using daily habit checklists, target simulators, gamified milestones, and a context-aware AI Coach powered by **Google Gemini 2.5 Flash**.
 
 ---
 
-## Key Features
+## 1. Implemented Features
 
-1. **Onboarding & Baseline Calculations**: Gathers commuting, home energy, dietary, shopping, and waste management habits, translating them into actual kilograms of CO₂ via a scientific carbon calculation engine.
-2. **Interactive Live Dashboards**: Displays monthly footprints, annual estimates, custom pie-chart breakdowns, comparisons, and active goals.
-3. **Daily Habits Logger**: Interactive tracker awarding XP and level progression for daily environment-friendly tasks.
-4. **Impact Simulator**: Simulates EV adoption, vegetarian diets, or solar swaps, calculating annual CO₂ offsets and real-world equivalents (e.g. trees planted) before committing.
-5. **EcoAI Coach (Gemini 2.5 Flash)**: Context-enhanced AI assistant that reads user profile metrics, active goals, simulations, and chat history to provide highly actionable carbon-reduction roadmaps.
-6. **Quest Challenges**: Allows users to join sustainability challenges, track progress, log completions, and earn XP rewards.
-7. **Trophy Achievements**: Automatically unlocks badges based on criteria metrics (e.g., "Waste Warrior", "Green Commuter") and awards leveling boosts.
-8. **Real-time Leaderboard**: Ranks members globally based on sustainability scores, promoting cooperative gamification.
-9. **Admin Panel**: Monitors user growth metrics, active challenges, aggregated CO₂ saved, and utilization graphs.
-
----
-
-## Technical Architecture
-
-- **Frontend**: React 19, TypeScript, TailwindCSS v4, Framer Motion, Recharts.
-- **Routing & Meta**: TanStack Router, TanStack Start (Nitro server integration).
-- **Database & Auth**: Supabase Database, Supabase Auth (Email + Google OAuth), Row Level Security (RLS) policies.
-- **AI Engine**: Google Gemini 2.5 Flash running securely in Deno Edge Functions (primary) or local server-side fallbacks.
+1. **Onboarding & Baseline Questionnaire**: Gathers initial transportation, home energy, diet, shopping, and waste management habits, translating choices into actual kilograms of CO₂ via a modular carbon calculation engine.
+2. **Interactive Live Dashboards**: Renders carbon totals, sustainability scores, XP level metrics, itemized pie-chart breakdowns, active goals, tree offset counters, and daily checkbox tasks.
+3. **Daily Habits Logger**: Users mark down green habits (e.g. reusable water bottle, plant-based meal) to immediately earn +15 XP.
+4. **Impact Simulator**: Interactively tests scenarios (EV adoption, solar panel swaps, vegetarian transitions) to preview carbon savings and tree equivalents before committing.
+5. **EcoAI Coach (Gemini 2.5 Flash)**: Context-enhanced assistant connected via Supabase Edge Functions. It reads the user's active goals, logs, level, and carbon profiles to formulate tailored reduction roadmaps. Features a built-in exponential backoff loop and a safe offline contingency mode (keeps logging active during rate limit periods).
+6. **Quest Challenges**: Users join structural challenges (Meat-Free Monday, Walk 5km Daily) and log daily logs to complete goals and claim +350 XP rewards.
+7. **Trophy Achievements**: Automatically unlocks and showcases user badges (e.g., "Eco Beginner", "Waste Warrior", "Green Commuter") as milestones are reached.
+8. **Live Global Leaderboard**: Ranks members dynamically based on their actual sustainability scores, XP points, and active habits.
+9. **Admin Teleboard**: Administrative views displaying real-time platform aggregates (DAU, Retention %, total trees, CO₂ saved), challenge/achievement editors, XP modifiers, and broadcast announcements.
+10. **Auth Integration**: Secure email registration, session persistence, and Google OAuth redirects with inline error captures.
 
 ---
 
-## Getting Started
+## 2. Tech Stack
 
-### 1. Prerequisites
+* **Frontend**: React 19, TypeScript, TailwindCSS v4, Recharts, Framer Motion
+* **Routing & SSR Engine**: TanStack Router, TanStack Start (native Vite bundling with Nitro serverless handlers)
+* **Backend Database**: Supabase Database (PostgreSQL with RLS policy protection and auto-signup trigger scripts)
+* **AI Model integration**: Deno Edge Functions connecting to Gemini 2.5 Flash (utilizing server-side fallback endpoints)
+* **Hosting Configuration**: Native Vercel deployment mappings (`vercel.json` + `nitro()` bundler presets)
 
-Ensure you have [Node.js](https://nodejs.org) (v18+) and npm installed.
+---
 
-### 2. Configure Environment Variables
+## 3. Required Environment Variables
 
-Copy `.env.example` to `.env` and fill out your variables:
+Create a `.env` file in the root directory:
 
-```bash
-cp .env.example .env
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Ensure you provide:
+*Note: For serverless actions and AI features, configure `GEMINI_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` as secrets directly inside your Supabase project settings.*
 
-- `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for client access.
-- `SUPABASE_SERVICE_ROLE_KEY` and `GEMINI_API_KEY` for backend edge function operations.
+---
 
-### 3. Run Database Migrations
+## 4. Local Setup
 
-Copy the SQL code in `supabase/migrations/20260620000000_initial_schema.sql` and run it in your Supabase Query Editor to set up tables, RLS rules, welcome triggers, and baseline lists.
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-### 4. Deploy EcoAI Edge Function
+### 2. Configure Database
+Copy the SQL code inside [initial_schema.sql](file:///c:/Coding/CarbonLens%20AI/aura-eco-insight-main/supabase/migrations/20260620000000_initial_schema.sql) and execute it in your Supabase SQL Editor to establish tables, RLS rules, profiles triggers, and default challenges.
 
-Deploy the Deno function using the Supabase CLI:
-
+### 3. Deploy Edge Functions
+Login to your Supabase account and deploy the Deno server code:
 ```bash
 supabase functions deploy eco-ai --project-ref your-project-id
 supabase secrets set GEMINI_API_KEY=your_gemini_api_key --project-ref your-project-id
 ```
 
-### 5. Start Local Development
-
-Install dependencies and launch the dev server:
-
+### 4. Start Development
 ```bash
-npm install
 npm run dev
 ```
 
 ---
 
-## Detailed Guides
+## 5. Deployment
 
-For comprehensive configuration and deployment, refer to the documentation inside the `/docs` folder:
+This repository is optimized for **Vercel** deployment using the Build Output API.
 
-- [Architecture Documentation](docs/architecture_documentation.md)
-- [Database Documentation](docs/database_documentation.md)
-- [Supabase Setup Guide](docs/supabase_setup_guide.md)
-- [Google OAuth Setup Guide](docs/google_oauth_setup_guide.md)
-- [Gemini Setup Guide](docs/gemini_setup_guide.md)
-- [Deployment Guide](docs/deployment_guide.md)
-- [Developer Guide](docs/developer_guide.md)
-
----
-
-Made with 🌱 for a lighter planet.
+* **Vite Preset**: Configured via `nitro()` plugin in `vite.config.ts`.
+* **Framework Preset**: Overridden explicitly using `vercel.json` to ensure serverless route mapping compiles server actions cleanly.
+* **Build Command**: `npm run build`
+* **Output Directory**: Handled automatically via Nitro build presets.
